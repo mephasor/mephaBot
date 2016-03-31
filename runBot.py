@@ -67,8 +67,7 @@ class MephaBot:
                                       'Already connected to a voice channel')
         channel_name = '♫ Муз. Студия ♫'
         print('Trying to join: %s' % (channel_name))
-        check = lambda c: c.name == channel_name and
-            c.type == discord.ChannelType.voice
+        check = lambda c: c.name == channel_name and c.type == discord.ChannelType.voice
         channel = discord.utils.find(check, message.server.channels)
         if channel is None:
             await client.send_message(message.channel,
