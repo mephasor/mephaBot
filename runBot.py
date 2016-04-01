@@ -54,21 +54,21 @@ class MephaBot(discord.Client):
                                   message.author.mention + u": ¯\_(ツ)_/¯")
 
     async def botExit(self, message):
-        await self.send_message(message.channel, "Bot exiting now. bye bye :( ")
+        await self.send_message(message.channel, "Ну я пошел. Пока! ")
         self.logout()
         exit()
 
     async def botJoinVoiceChannel(self, message):
         if self.is_voice_connected():
             await self.send_message(message.channel,
-                                      'Already connected to a voice channel')
+                                      'Я уже в голосовом канале.')
         channel_name = '♫ Муз. Студия ♫'
         print('Trying to join: %s' % (channel_name))
         check = lambda c: c.name == channel_name and c.type == discord.ChannelType.voice
         channel = discord.utils.find(check, message.server.channels)
         if channel is None:
             await self.send_message(message.channel,
-                                      'Cannot find a voice channel by that name.')
+                                      'Не могу найти канал с таким названием.')
         else:
             await self.join_voice_channel(channel)
             self.starter = message.author
@@ -77,6 +77,9 @@ class MephaBot(discord.Client):
     async def botStop(self, message):
         self.player.stop()
     async def botPlayRadio(self, message):
+        if not self.is_voice_connected():
+            await self.botJoinVoiceChannel(message)
+
         if(self.playerStatus is not 0):
             self.player.stop()
 
