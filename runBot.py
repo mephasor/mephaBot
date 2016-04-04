@@ -147,7 +147,9 @@ class MephaBot(discord.Client):
 
 
         for key in self.commands:
-            if(message.content.startswith(key)):
+            # command has to match the key exactly
+            cmd = message.content.split(' ')[0]
+            if cmd == key:
                 rtrn = await self.commands[key](self, message)
                 await self.delete_message(message)
 
