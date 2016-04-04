@@ -24,6 +24,7 @@ class MephaBot(discord.Client):
 
     # Radio station dictionary
     radio = {}
+    radioNames = {}
 
     # Audio Player status
     player = 0
@@ -43,6 +44,7 @@ class MephaBot(discord.Client):
         for line in configFile:
             tmp = line.split(', ')
             self.radio[tmp[0]] = tmp[1].rstrip('\n')
+            self.radioNames[tmp[0]] = tmp[2].rstrip('\n')
 
 
     def runBot(self):
@@ -76,19 +78,39 @@ class MephaBot(discord.Client):
 
     async def botStop(self, message):
         self.player.stop()
+        self.loop.create_task(self.change_status())
+        self.playerStatus = 0
+
+
     async def botPlayRadio(self, message):
         if not self.is_voice_connected():
             await self.botJoinVoiceChannel(message)
 
         if(self.playerStatus is not 0):
+            print('Have to stop Radio first')
+            print('PlayerStatus: ' + str(self.playerStatus))
             self.player.stop()
 
         station = message.content[1:]
-        radioUrl = self.radio[station]
-        print('Starting to play Radio Station: '+station)
-        self.player = self.voice.create_ffmpeg_player(radioUrl)
-        self.player.start()
-        self.playerStatus = 1
+
+        #Handle special short cuts (desired by discord members)
+        if station is '1':
+            station = 'piterfm'
+        elif station is '2':
+            station = 'nashe'
+
+        if station in self.radio:
+            radioUrl = self.radio[station]
+            print('Starting to play Radio Station: '+self.radioNames[station])
+            self.player = self.voice.create_ffmpeg_player(radioUrl)
+            self.player.start()
+            self.playerStatus = 1
+
+            game = discord.Game(name=self.radioNames[station])
+            self.loop.create_task(self.change_status(game))
+        else:
+            print('No such station in list.')
+
 
     # command list
     commands = {
@@ -97,7 +119,10 @@ class MephaBot(discord.Client):
         '!bot': botJoinVoiceChannel,
         '!piterfm': botPlayRadio,
         '!nashe': botPlayRadio,
-        '!1live': botPlayRadio,
+        '!einslive': botPlayRadio,
+        '!1': botPlayRadio,
+        '!2': botPlayRadio,
+        '!0': botStop,
         '!stop': botStop
     }
 
@@ -115,7 +140,6 @@ class MephaBot(discord.Client):
 
         for key in self.commands:
             if(message.content.startswith(key)):
-                print(self.user.name)
                 rtrn = await self.commands[key](self, message)
                 await self.delete_message(message)
 
