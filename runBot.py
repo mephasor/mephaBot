@@ -35,16 +35,7 @@ class MephaBot(discord.Client):
     # 0 stopped, 1 playing, 2 paused
     playerStatus = 0
 
-    # Constructor
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
 
-        configFile = open('cfg/radio.cfg').readlines()
-        for line in configFile:
-            tmp = line.split(', ')
-            self.radio[tmp[0]] = tmp[1].rstrip('\n')
-            self.radioNames[tmp[0]] = tmp[2].rstrip('\n')
 
 
     def runBot(self):
@@ -112,19 +103,36 @@ class MephaBot(discord.Client):
             print('No such station in list.')
 
 
+    async def botListCommands(self, message):
+        for key in self.commands:
+            print(key, str(self.commands[key]))
+
     # command list
     commands = {
         '!shrug': botShrug,
         '!exit': botExit,
         '!bot': botJoinVoiceChannel,
-        '!piterfm': botPlayRadio,
-        '!nashe': botPlayRadio,
-        '!einslive': botPlayRadio,
         '!1': botPlayRadio,
         '!2': botPlayRadio,
         '!0': botStop,
-        '!stop': botStop
+        '!stop': botStop,
+        '!list': botListCommands
     }
+
+    # Constructor
+    def __init__(self, cfg):
+        super().__init__()
+        self.cfg = cfg
+
+        # Open radio config and populate the command list, radio URL list and
+        # radio name list.
+        configFile = open('cfg/radio.cfg').readlines()
+        for line in configFile:
+            tmp = line.split(', ')
+            self.radio[tmp[0]] = tmp[1].rstrip('\n')
+            self.radioNames[tmp[0]] = tmp[2].rstrip('\n')
+            self.commands['!'+tmp[0]] = MephaBot.botPlayRadio
+
 
 
 # Event Handlers
