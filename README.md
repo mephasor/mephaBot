@@ -12,7 +12,8 @@ At the moment all it basically does is taking radio stations from a file and usi
 
 ##radio.cfg structure
 
-Each line represents one station. Three fields have to be provided separated by a coma:
-shortName, URL, longName
+Each line represents one station. Three fields have to be provided:
+
+`shortName, URL, longName`
 
 The fields are separated using a ', ' which is important.
