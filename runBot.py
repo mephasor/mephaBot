@@ -1,7 +1,10 @@
 import discord
 import asyncio
+import urllib
+import re
 
 
+from include.chatterbotapi import ChatterBotFactory, ChatterBotType
 import configReader
 
 if not discord.opus.is_loaded():
@@ -107,6 +110,21 @@ class MephaBot(discord.Client):
         for key in self.commands:
             print(key, str(self.commands[key]))
 
+
+    async def botCleverbot(self, message):
+        p = re.compile('\|([A-F0-9][A-F0-9][A-F0-9][A-F0-9])')
+
+        msg = message.content[2:]
+        sendMsg = msg
+        print('message: '+sendMsg)
+        response = self.bot1session.think(sendMsg)
+        res = re.findall(p,response)
+        for i in res:
+            response = response.replace('|'+i, chr(int(i, 16)))
+
+        await self.send_message(message.channel,response)
+        print(response)
+
     # command list
     commands = {
         '!shrug': botShrug,
@@ -116,7 +134,8 @@ class MephaBot(discord.Client):
         '!2': botPlayRadio,
         '!0': botStop,
         '!stop': botStop,
-        '!list': botListCommands
+        '!list': botListCommands,
+        '=': botCleverbot
     }
 
     # Constructor
@@ -133,6 +152,11 @@ class MephaBot(discord.Client):
             self.radioNames[tmp[0]] = tmp[2].rstrip('\n')
             self.commands['!'+tmp[0]] = MephaBot.botPlayRadio
 
+        # Init Cleverbot
+        factory = ChatterBotFactory()
+        self.bot1 = factory.create(ChatterBotType.CLEVERBOT)
+        self.bot1session = self.bot1.create_session()
+
 
 
 # Event Handlers
@@ -145,13 +169,13 @@ class MephaBot(discord.Client):
 
     async def on_message(self, message):
 
-
         for key in self.commands:
             # command has to match the key exactly
             cmd = message.content.split(' ')[0]
             if cmd == key:
                 rtrn = await self.commands[key](self, message)
-                await self.delete_message(message)
+                if key != '=':
+                    await self.delete_message(message)
 
 
 def main():
