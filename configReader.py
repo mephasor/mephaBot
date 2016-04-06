@@ -1,6 +1,8 @@
 import re
 
 p = re.compile(r"DiscordName=(.*)\nDiscordPW=(.*)\n.*\n.*\nOwnerID=(.*)")
+q = re.compile(r"ADDON=(.*)\n")
+
 
 configPath = 'cfg/botConfig.cfg'
 
@@ -10,6 +12,8 @@ class ConfigReader:
     username = ''
     password = ''
     ownerID = ''
+
+    addonList = []
 
     ''' Read in the config file and set parameters'''
 
@@ -22,6 +26,12 @@ class ConfigReader:
         self.password = result.groups()[1]
         self.ownerID = result.groups()[2]
 
+        addonResults = re.findall(q, cfgContent)
+
+        for addon in addonResults:
+            print('cfgAddonFound: '+addon)
+            self.addonList.append(addon)
+
     def getUsername(self):
         return self.username
 
@@ -30,3 +40,7 @@ class ConfigReader:
 
     def getOwnerID(self):
         return self.ownerID
+
+    def getAddonList(self):
+        return self.addonList
+
