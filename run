@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ ! -f /tmp/foo.txt ]; then
+    echo "ChatterbotAPI not found! Downloading"
+    wget https://raw.githubusercontent.com/pierredavidbelanger/chatter-bot-api/master/python/chatterbotapi.py -O include/chatterbotapi.py
+fi
+
+# now run the bot and restart it when it exits
+while :
+do
+    echo "Restarting bot..."
+    python3.5 runBot.py
+done
