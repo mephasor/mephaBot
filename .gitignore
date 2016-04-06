@@ -60,3 +60,7 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# custom files
+cfg/botConfig.cfg
+include/chatterbotapi.py
