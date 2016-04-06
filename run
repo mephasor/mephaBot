@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -f /tmp/foo.txt ]; then
+if [ ! -f include/chatterbotapi.py ]; then
     echo "ChatterbotAPI not found! Downloading"
     wget https://raw.githubusercontent.com/pierredavidbelanger/chatter-bot-api/master/python/chatterbotapi.py -O include/chatterbotapi.py
 fi

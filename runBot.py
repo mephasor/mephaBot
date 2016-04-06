@@ -3,6 +3,7 @@ import asyncio
 import urllib
 import re
 import importlib
+import sys
 
 import configReader
 
@@ -12,7 +13,7 @@ if not discord.opus.is_loaded():
     # you should replace this with the location the
     # opus library is located in and with the proper filename.
     discord.opus.load_opus('/usr/local/lib/libopus.so')
-    
+
 
 class MephaBot(discord.Client):
 
@@ -32,8 +33,8 @@ class MephaBot(discord.Client):
     async def botExit(self, message):
         await self.send_message(message.channel, "Ну я пошел. Пока! ")
         self.logout()
-        exit()
-        
+        sys.exit(0)
+
 
     async def botListCommands(self, message):
         for key in self.commands:
@@ -62,7 +63,7 @@ class MephaBot(discord.Client):
     def __init__(self, cfg):
         super().__init__()
         self.cfg = cfg
-        
+
         # Load addons
         self.initAddons()
 
@@ -75,7 +76,7 @@ class MephaBot(discord.Client):
         print(self.user.id)
         print('------')
 
-# The main dispatcher. Calls functions based on key words. 
+# The main dispatcher. Calls functions based on key words.
     async def on_message(self, message):
 
         for key in self.commands:
