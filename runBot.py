@@ -37,8 +37,11 @@ class MephaBot(discord.Client):
 
 
     async def botListCommands(self, message):
+        msg = 'Лист доступных команд:\n'
         for key in self.commands:
+            msg = msg + key + '\n'
             print(key, str(self.commands[key]))
+        await self.send_message(message.channel, msg)
 
     # command list
     commands = {
