@@ -1,8 +1,31 @@
 import discord
+import re
+import urllib.request
 radio = {}
 radioNames = {}
-
+radioWhosPlaying = {}
+radioNowPlaying = ''
 playerStatus = 0
+
+async def botWhatIsPlaying(client, message):
+    if playerStatus is 0:
+        await client.send_message(message.channel, 'А ничего и не играет.')
+    else:
+        src = radioWhosPlaying['piterfm']
+        print(src)
+        response = urllib.request.urlopen(src[0])
+        html = response.read()
+        codec = response.info().get_param('charset', 'utf8')
+        html = html.decode(codec)
+        p = re.compile(src[1])
+        result = re.search(p, html)
+        if result is not None:
+            gr = result.groups()
+            msg = "{:s} - {:s} ({:s})".format(gr[0], gr[1], gr[2])
+            await client.send_message(message.channel, msg)
+        else:
+            print(html)
+
 
 async def botJoinVoiceChannel(client, message):
     print(message)
@@ -65,10 +88,14 @@ commands = {
     '!2': botPlayRadio,
     '!0': botStop,
     '!stop': botStop,
+    '!a': botWhatIsPlaying,
 }
 
 
 def load():
+    global radio
+    global radioNames
+    global radioWhosPlaying
     # Open radio config and populate the command list, radio URL list and
     # radio name list.
     configFile = open('cfg/radio.cfg').readlines()
@@ -77,6 +104,7 @@ def load():
         radio[tmp[0]] = tmp[1].rstrip('\n')
         radioNames[tmp[0]] = tmp[2].rstrip('\n')
         commands['!'+tmp[0]] = botPlayRadio
+        radioWhosPlaying[tmp[0]] = [tmp[3], tmp[4].rstrip('\n')]
 
     return commands
 
