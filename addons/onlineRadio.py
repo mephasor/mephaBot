@@ -11,8 +11,7 @@ async def botWhatIsPlaying(client, message):
     if playerStatus is 0:
         await client.send_message(message.channel, 'А ничего и не играет.')
     else:
-        src = radioWhosPlaying['piterfm']
-        print(src)
+        src = radioWhosPlaying[radioNowPlaying]
         response = urllib.request.urlopen(src[0])
         html = response.read()
         codec = response.info().get_param('charset', 'utf8')
@@ -21,10 +20,15 @@ async def botWhatIsPlaying(client, message):
         result = re.search(p, html)
         if result is not None:
             gr = result.groups()
-            msg = "{:s} - {:s} ({:s})".format(gr[0], gr[1], gr[2])
+            if len(gr) is 3:
+                msg = "{:s} - {:s} ({:s})".format(gr[0], gr[1], gr[2])
+            elif len(gr) is 2:
+                msg = "{:s} - {:s}".format(gr[0], gr[1])
+            else:
+                msg = 'Ляляля играет. Я хз'
             await client.send_message(message.channel, msg)
         else:
-            print(html)
+            await client.send_message(message.channel, 'Не знаю что играет.')
 
 
 async def botJoinVoiceChannel(client, message):
@@ -53,6 +57,7 @@ async def botStop(client, message):
 
 async def botPlayRadio(client, message):
     global playerStatus
+    global radioNowPlaying
 
     if not client.is_voice_connected():
         await botJoinVoiceChannel(client, message)
@@ -61,6 +66,7 @@ async def botPlayRadio(client, message):
         print('Have to stop Radio first')
         print('PlayerStatus: ' + str(playerStatus))
         client.player.stop()
+        radioNowPlaying = ''
 
     station = message.content[1:]
 
@@ -75,6 +81,7 @@ async def botPlayRadio(client, message):
         print('Starting to play Radio Station: '+radioNames[station])
         client.player = client.voice.create_ffmpeg_player(radioUrl)
         client.player.start()
+        radioNowPlaying = station
         playerStatus = 1
 
         game = discord.Game(name=radioNames[station])
