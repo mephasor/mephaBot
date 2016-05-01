@@ -1,6 +1,7 @@
 ## DiscordCredentials
 DiscordName=bot@email.com
 DiscordPW=s3cretPW
+DiscordToken=TOKENGOESHERE
 
 #Owner Settings
 OwnerID=XXXXXXXXXXXXXXXXXX

@@ -22,12 +22,11 @@ class MephaBot(discord.Client):
     # Config Reader Result:
     cfg = ''
     commands = {}
-
     # Addon list
     addonList = []
 
     def runBot(self):
-       super().run(self.cfg.getUsername(), self.cfg.getPW())
+       super().run(self.cfg.getToken())
 
     #Command Execution functions
     async def botExit(self, message):
@@ -69,7 +68,6 @@ class MephaBot(discord.Client):
 
         # Load addons
         self.initAddons()
-
 
 
 # Event Handlers
