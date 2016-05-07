@@ -31,3 +31,9 @@ Each station has to be created according to the following example code:
   </station>
 
 ```
+
+Usage: 
+1: Install ffmpeg
+2: Install discordpy
+3: ./run
+Ctrl+c to stop bot script
