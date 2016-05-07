@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Trap Ctrl-c and exit if needed
+trap "echo Exited!; exit;" SIGINT SIGTERM
+
+# Chatterbot API download into include 
 if [ ! -f include/chatterbotapi.py ]; then
     echo "ChatterbotAPI not found! Downloading"
     wget https://raw.githubusercontent.com/pierredavidbelanger/chatter-bot-api/master/python/chatterbotapi.py -O include/chatterbotapi.py
@@ -11,3 +15,4 @@ do
     echo "Restarting bot..."
     python3.5 runBot.py
 done
+
