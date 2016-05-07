@@ -15,24 +15,30 @@ async def botWhatIsPlaying(client, message):
     if playerStatus is 0:
         await client.send_message(message.channel, 'А ничего и не играет.')
     else:
-        src = radioWhosPlaying[radioNowPlaying]
-        response = urllib.request.urlopen(src[0])
-        html = response.read()
-        codec = response.info().get_param('charset', 'utf8')
-        html = html.decode(codec)
-        p = re.compile(src[1])
-        result = re.search(p, html)
-        if result is not None:
-            gr = result.groups()
-            if len(gr) is 3:
-                msg = "{:s} - {:s} ({:s})".format(gr[0], gr[1], gr[2])
-            elif len(gr) is 2:
-                msg = "{:s} - {:s}".format(gr[0], gr[1])
+        if radioNowPlaying in radioWhosPlaying:
+            print('Getting whos playing for' + radioNowPlaying)
+            src = radioWhosPlaying[radioNowPlaying]
+            response = urllib.request.urlopen(src[0])
+            html = response.read()
+            codec = response.info().get_param('charset', 'utf8')
+            html = html.decode(codec)
+            p = re.compile(src[1])
+            result = re.search(p, html)
+            if result is not None:
+                gr = result.groups()
+                if len(gr) is 3:
+                    msg = "{:s} - {:s} ({:s})".format(gr[0], gr[1], gr[2])
+                elif len(gr) is 2:
+                    msg = "{:s} - {:s}".format(gr[0], gr[1])
+                else:
+                    msg = 'Ляляля играет. Я хз'
+                await client.send_message(message.channel, msg)
             else:
-                msg = 'Ляляля играет. Я хз'
-            await client.send_message(message.channel, msg)
+                await client.send_message(message.channel, 'Не знаю что играет.')
         else:
-            await client.send_message(message.channel, 'Не знаю что играет.')
+            await client.send_message(message.channel,
+                                      'Информация не доступна для этой станции')
+
 
 
 async def botJoinVoiceChannel(client, message):
