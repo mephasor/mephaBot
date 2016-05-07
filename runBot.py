@@ -1,3 +1,4 @@
+#!/usr/bin/python3.5
 import discord
 import asyncio
 import urllib
@@ -48,7 +49,7 @@ class MephaBot(discord.Client):
         '!list': botListCommands,
     }
 
-    def initAddons(self):
+    def initAddons(self, cfg):
         names = self.cfg.getAddonList()
 
         # load addon modules
@@ -57,7 +58,7 @@ class MephaBot(discord.Client):
 
         # load addon commands
         for addon in self.addonList:
-            newCmds = addon.load()
+            newCmds = addon.load(cfg)
             for cmd in newCmds:
                 self.commands[cmd] = newCmds[cmd]
 
@@ -67,7 +68,7 @@ class MephaBot(discord.Client):
         self.cfg = cfg
 
         # Load addons
-        self.initAddons()
+        self.initAddons(cfg)
 
 
 # Event Handlers

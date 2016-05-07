@@ -9,7 +9,7 @@ commands = {
     '!shrug': botShrug
 }
 
-def load():
+def load(config):
     return commands
 
 def getName():

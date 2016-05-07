@@ -29,7 +29,7 @@ commands = {
 }
 
 # addon init function
-def load():
+def load(cfg):
     global bot
     global botSession
     # Init Cleverbot

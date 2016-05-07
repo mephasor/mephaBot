@@ -1,11 +1,15 @@
 import discord
 import re
 import urllib.request
+import xml.etree.ElementTree as ET
+
 radio = {}
 radioNames = {}
 radioWhosPlaying = {}
 radioNowPlaying = ''
 playerStatus = 0
+defaultChannel = ''
+voice = ''
 
 async def botWhatIsPlaying(client, message):
     if playerStatus is 0:
@@ -33,10 +37,10 @@ async def botWhatIsPlaying(client, message):
 
 async def botJoinVoiceChannel(client, message):
     print(message)
-    if client.is_voice_connected():
+    if client.is_voice_connected(message.server):
         await client.send_message(message.channel,
                                   'Я уже в голосовом канале.')
-    channel_name = '♫ Муз. Студия ♫'
+    channel_name = defaultChannel 
     print('Trying to join: %s' % (channel_name))
     check = lambda c: c.name == channel_name and c.type == discord.ChannelType.voice
     channel = discord.utils.find(check, message.server.channels)
@@ -44,7 +48,8 @@ async def botJoinVoiceChannel(client, message):
         await client.send_message(message.channel,
                                   'Не могу найти канал с таким названием.')
     else:
-        await client.join_voice_channel(channel)
+        global voice
+        voice = await client.join_voice_channel(channel)
         client.starter = message.author
 
 
@@ -59,7 +64,7 @@ async def botPlayRadio(client, message):
     global playerStatus
     global radioNowPlaying
 
-    if not client.is_voice_connected():
+    if not client.is_voice_connected(message.server):
         await botJoinVoiceChannel(client, message)
 
     if(playerStatus is not 0):
@@ -79,7 +84,9 @@ async def botPlayRadio(client, message):
     if station in radio:
         radioUrl = radio[station]
         print('Starting to play Radio Station: '+radioNames[station])
-        client.player = client.voice.create_ffmpeg_player(radioUrl)
+        print(radioUrl)
+        client.player = voice.create_ffmpeg_player(radioUrl)
+        print('blabla')
         client.player.start()
         radioNowPlaying = station
         playerStatus = 1
@@ -99,19 +106,41 @@ commands = {
 }
 
 
-def load():
+def load(config):
     global radio
     global radioNames
     global radioWhosPlaying
+    global defaultChannel
     # Open radio config and populate the command list, radio URL list and
+
     # radio name list.
-    configFile = open('cfg/radio.cfg').readlines()
-    for line in configFile:
-        tmp = line.split(', ')
-        radio[tmp[0]] = tmp[1].rstrip('\n')
-        radioNames[tmp[0]] = tmp[2].rstrip('\n')
-        commands['!'+tmp[0]] = botPlayRadio
-        radioWhosPlaying[tmp[0]] = [tmp[3], tmp[4].rstrip('\n')]
+    # configFile = open('cfg/radio.cfg').readlines()
+    # for line in configFile:
+    #     tmp = line.split(', ')
+    #     radio[tmp[0]] = tmp[1].rstrip('\n')
+    #     radioNames[tmp[0]] = tmp[2].rstrip('\n')
+    #     commands['!'+tmp[0]] = botPlayRadio
+    #     radioWhosPlaying[tmp[0]] = [tmp[3], tmp[4].rstrip('\n')]
+
+    defaultChannel = config.getDefaultChannel()
+
+    data = open('cfg/radio.xml').read()
+    root = ET.fromstring(data)
+    for station in root:
+        cmd = station.find('command').text
+        name = station.get('name')
+        strURL = station.find('streamURL').text
+        nowURL = station.find('nowPlayingURL').text
+        nowRE = station.find('nowPlayingRE').text
+
+        radio[cmd] = strURL.strip(' \t\n')
+        radioNames[cmd] = name.strip('\n')
+        commands['!'+cmd] = botPlayRadio
+
+        # If we have now playing settings available
+        if(nowURL is not None and nowRE is not None):
+            radioWhosPlaying[cmd] = [nowURL.strip(' \n\t'), nowRE.strip(' \t\n')]
+
 
     return commands
 

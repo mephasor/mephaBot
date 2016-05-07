@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<radiolist>
+
+  <station name="Наше Радио">
+    <command>nashe</command>
+    <streamURL>
+      http://nashe1.hostingradio.ru:80/nashe-128.mp3
+    </streamURL>
+    <nowPlayingURL>http://radiopleer.com/info/nashe.txt</nowPlayingURL>
+    <nowPlayingRE>{"artist":"(.*)". "song":"(.*)"}</nowPlayingRE>
+  </station>
+
+  <!-- 1Live -->
+  <station name="1Live">
+    <command>einslive</command>
+    <streamURL>
+      http://1live.akacast.akamaistream.net/7/706/119434/v1/gnl.akacast.akamaistream.net/1live
+    </streamURL>
+    <nowPlayingURL></nowPlayingURL>
+    <nowPlayingRE></nowPlayingRE>
+  </station>
+
+  <!-- Питер FM -->
+  <station name="Питер FM">
+    <command>piterfm</command>
+    <streamURL>
+      http://icecast.piktv.cdnvideo.ru/piterfm
+    </streamURL>
+    <nowPlayingURL>http://www.radiopiterfm.ru/login/div_musicblock.php</nowPlayingURL>
+    <nowPlayingRE><![CDATA[;"><strong>(.*)<\/strong> &mdash; (.*) <span>(\d*:\d*)<\/span>
+    ]]>
+    </nowPlayingRE>
+  </station>
+
+  , , kkk, ,   <!-- Empty Struct -->
+  <!--
+      <station>
+      <command></command>
+      <streamURL>
+      </streamURL>
+      <name></name>
+      <nowPlayingURL></nowPlayingURL>
+      <nowPlayingRE></nowPlayingRE>
+      </station>
+  -->
+</radiolist>

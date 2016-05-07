@@ -1,7 +1,7 @@
 import re
 p = re.compile(r"DiscordToken=(.*)\n\n.*\nOwnerID=(.*)")
 q = re.compile(r"ADDON=(.*)\n")
-
+r = re.compile(r"DefaultVoiceChannel=(.*)")
 
 configPath = 'cfg/botConfig.cfg'
 
@@ -25,6 +25,8 @@ class ConfigReader:
 
         addonResults = re.findall(q, cfgContent)
 
+        self.defaultChannel = re.search(r, cfgContent).groups()[0]
+        print('Default Channel: ' + self.defaultChannel)
         for addon in addonResults:
             print('cfgAddonFound: '+addon)
             self.addonList.append(addon)
@@ -38,3 +40,5 @@ class ConfigReader:
     def getAddonList(self):
         return self.addonList
 
+    def getDefaultChannel(self):
+        return self.defaultChannel
