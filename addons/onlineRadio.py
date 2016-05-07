@@ -84,9 +84,7 @@ async def botPlayRadio(client, message):
     if station in radio:
         radioUrl = radio[station]
         print('Starting to play Radio Station: '+radioNames[station])
-        print(radioUrl)
         client.player = voice.create_ffmpeg_player(radioUrl)
-        print('blabla')
         client.player.start()
         radioNowPlaying = station
         playerStatus = 1
