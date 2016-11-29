@@ -32,6 +32,15 @@
     </nowPlayingRE>
   </station>
 
+  <!-- Питер FM -->
+  <station name="Радио Щансон">
+    <command>chanson</command>
+    <streamURL>
+        http://chanson.hostingradio.ru:8041/minus_4
+    </streamURL>
+    <nowPlayingURL></nowPlayingURL>
+    <nowPlayingRE></nowPlayingRE>
+  </station>
   <!-- Empty Struct -->
   <!--
       <station>

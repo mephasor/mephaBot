@@ -46,7 +46,7 @@ async def botJoinVoiceChannel(client, message):
     if client.is_voice_connected(message.server):
         await client.send_message(message.channel,
                                   'Я уже в голосовом канале.')
-    channel_name = defaultChannel 
+    channel_name = defaultChannel
     print('Trying to join: %s' % (channel_name))
     check = lambda c: c.name == channel_name and c.type == discord.ChannelType.voice
     channel = discord.utils.find(check, message.server.channels)
@@ -83,9 +83,13 @@ async def botPlayRadio(client, message):
 
     #Handle special short cuts (desired by discord members)
     if station is '1':
+        print("Debug: piterFM")
         station = 'piterfm'
     elif station is '2':
         station = 'nashe'
+    elif station is '3':
+        print("Debug: chanson")
+        station = 'chanson'
 
     if station in radio:
         radioUrl = radio[station]
@@ -104,6 +108,7 @@ commands = {
     '!bot': botJoinVoiceChannel,
     '!1': botPlayRadio,
     '!2': botPlayRadio,
+    '!3': botPlayRadio,
     '!0': botStop,
     '!stop': botStop,
     '!a': botWhatIsPlaying,
