@@ -1,4 +1,7 @@
 # mephaBot
+
+# !!! THIS BOT IS CURRENTLY NOT MAINTAINED !!!
+
 Little Discord Bot that I use to play radio streams and other random stuff.
 
 The bot uses an addon structure. Addons can be enable and disabled in the config file. New addons can be added using the interfaces.
